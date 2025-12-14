@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Voice to Telegram Bot</title>
+</head>
+<body>
+  <h2>Send Your Voice to @gyanam_bot</h2>
+  <button id="recordBtn">🎙️ Record</button>
+  <button id="stopBtn" disabled>🛑 Stop</button>
+  <audio id="audioPlayback" controls style="display:none;"></audio>
+  <button id="sendBtn" disabled>Send to Telegram</button>
+  <p id="status"></p>
+
+<script>
+let mediaRecorder, audioChunks, audioBlob;
+
+const recordBtn = document.getElementById('recordBtn');
+const stopBtn = document.getElementById('stopBtn');
+const sendBtn = document.getElementById('sendBtn');
+const audioPlayback = document.getElementById('audioPlayback');
+const status = document.getElementById('status');
+
+recordBtn.onclick = async () => {
+  let stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  mediaRecorder = new MediaRecorder(stream);
+  audioChunks = [];
+  mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+  mediaRecorder.onstop = () => {
+    audioBlob = new Blob(audioChunks, { type: 'audio/ogg; codecs=opus' });
+    audioPlayback.src = URL.createObjectURL(audioBlob);
+    audioPlayback.style.display = 'block';
+    sendBtn.disabled = false;
+  };
+  mediaRecorder.start();
+  recordBtn.disabled = true;
+  stopBtn.disabled = false;
+};
+
+stopBtn.onclick = () => {
+  mediaRecorder.stop();
+  recordBtn.disabled = false;
+  stopBtn.disabled = true;
+};
+
+sendBtn.onclick = async () => {
+  status.textContent = 'Sending...';
+  const formData = new FormData();
+  formData.append('voice', audioBlob, 'voiceMessage.ogg');
+  // POST to your backend endpoint
+  const res = await fetch('/send-audio', {
+    method: 'POST',
+    body: formData
+  });
+  const data = await res.json();
+  status.textContent = data.ok ? 'Voice sent to Telegram!' : 'Failed to send!';
+};
+</script>
+</body>
+</html>

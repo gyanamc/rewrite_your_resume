@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Third Person POV – Kumar Gyanam</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0b1f4d;
+      color: white;
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    p.description {
+      max-width: 700px;
+      margin: 0 auto 30px auto;
+      color: #ccc;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .video-wrapper {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    }
+
+    .video-wrapper iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      border-radius: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🎬 Third Person POV Video Generator</h1>
+
+  <p class="description">
+    This tool transforms your input into cinematic third-person point-of-view videos — perfect for showcasing products, storytelling, or simulating scenes.
+    <br><br>
+    Watch the sample demos below to explore its creativity:
+  </p>
+
+  <div class="video-grid">
+    <div class="video-wrapper">
+      <iframe src="https://www.youtube.com/embed/GvZLjxrAOT0" allowfullscreen></iframe>
+    </div>
+    <div class="video-wrapper">
+      <iframe src="https://www.youtube.com/embed/zbHn8FaKa3Q" allowfullscreen></iframe>
+    </div>
+    <div class="video-wrapper">
+      <iframe src="https://www.youtube.com/embed/BJeJrlVgsvI" allowfullscreen></iframe>
+    </div>
+  </div>
+
+</body>
+</html>

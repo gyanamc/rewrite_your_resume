@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>First Person POV – Kumar Gyanam</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0b1f4d;
+      color: white;
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    p.description {
+      max-width: 700px;
+      margin: 0 auto 30px auto;
+      color: #ccc;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .video-wrapper {
+      position: relative;
+      padding-bottom: 177.77%; /* Aspect ratio for vertical shorts */
+      height: 0;
+      overflow: hidden;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    }
+
+    .video-wrapper iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      border-radius: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>👁️ First Person POV Video Generator</h1>
+
+  <p class="description">
+    Experience the world from your AI agent's perspective! These immersive first-person POV videos are created from minimal prompts — great for simulation, storytelling, or immersive marketing.
+    <br><br>
+    Explore the samples below:
+  </p>
+
+  <div class="video-grid">
+    <div class="video-wrapper"><iframe src="https://www.youtube.com/embed/ikdtmaZxm9E" allowfullscreen></iframe></div>
+    <div class="video-wrapper"><iframe src="https://www.youtube.com/embed/JkVvblCVki4" allowfullscreen></iframe></div>
+    <div class="video-wrapper"><iframe src="https://www.youtube.com/embed/k-QQ7u5Ldf0" allowfullscreen></iframe></div>
+    <div class="video-wrapper"><iframe src="https://www.youtube.com/embed/ZqyIKxvqpVg" allowfullscreen></iframe></div>
+    <div class="video-wrapper"><iframe src="https://www.youtube.com/embed/fBQRi7SoH8Y" allowfullscreen></iframe></div>
+    <div class="video-wrapper"><iframe src="https://www.youtube.com/embed/_k1kd27Ai1c" allowfullscreen></iframe></div>
+    <div class="video-wrapper"><iframe src="https://www.youtube.com/embed/fDe4pEnQ3R4" allowfullscreen></iframe></div>
+  </div>
+
+</body>
+</html>

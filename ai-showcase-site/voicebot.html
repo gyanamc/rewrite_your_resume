@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Talk to ILAVoice – SBI Card Voice Assistant</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0b1f4d;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      padding: 20px;
+      text-align: center;
+    }
+
+    h1 {
+      color: #4CAF50;
+      margin-bottom: 8px;
+    }
+
+    p {
+      color: #ccc;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Talk to ILAVoice – Your SBI Card Voice Assistant</h1>
+  <p>Ask anything about SBI Card — ILAVoice is ready to help instantly.</p>
+
+  <div id="elevenlabs-talk-to"></div>
+
+  <script>
+    (function() {
+      var script = document.createElement('script');
+      script.src = "https://elevenlabs.io/app/embed/talk-to.js";
+      script.async = true;
+      script.onload = function() {
+        window.TalkTo.render({
+          agent_id: "agent_01jytxnqscetz995vm9sa5tg2g",
+          container: "#elevenlabs-talk-to"
+        });
+      };
+      document.head.appendChild(script);
+    })();
+  </script>
+</body>
+</html>

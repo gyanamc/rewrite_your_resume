@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Rewrite Your Resume – Kumar Gyanam</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="icon" href="assets/favicon.png" type="image/png">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0b1f4d;
+      color: white;
+      padding: 40px 20px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    .description {
+      color: #ccc;
+      font-size: 15px;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .session-info {
+      font-size: 12px;
+      color: #999;
+      font-family: 'Courier New', monospace;
+      margin-top: 10px;
+    }
+
+    .form-card {
+      background-color: #132e65;
+      padding: 25px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+    }
+
+    .form-card h2 {
+      font-size: 18px;
+      margin-bottom: 8px;
+      color: #fff;
+    }
+
+    .form-card p {
+      font-size: 14px;
+      color: #ccc;
+      margin-bottom: 16px;
+    }
+
+    .file-upload-area {
+      border: 2px dashed #4CAF50;
+      border-radius: 8px;
+      padding: 30px;
+      text-align: center;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      margin-bottom: 10px;
+    }
+
+    .file-upload-area:hover {
+      background-color: rgba(76, 175, 80, 0.1);
+    }
+
+    .file-upload-area.has-file {
+      border-color: #4CAF50;
+      background-color: rgba(76, 175, 80, 0.1);
+    }
+
+    .file-input {
+      display: none;
+    }
+
+    .file-info {
+      margin-top: 10px;
+      padding: 12px;
+      background-color: rgba(76, 175, 80, 0.2);
+      border-radius: 8px;
+      display: none;
+    }
+
+    .file-info.show {
+      display: block;
+    }
+
+    .file-name {
+      font-weight: 600;
+      color: #4CAF50;
+      margin-bottom: 4px;
+    }
+
+    .file-size {
+      font-size: 12px;
+      color: #ccc;
+      margin-bottom: 12px;
+    }
+
+    .upload-button, .change-button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s;
+    }
+
+    .upload-button:hover, .change-button:hover {
+      background-color: #45a049;
+    }
+
+    .change-button {
+      background-color: #3760e8;
+    }
+
+    .change-button:hover {
+      background-color: #2d4fc7;
+    }
+
+    input[type="text"], textarea {
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
+      border: 1px solid #3760e8;
+      border-radius: 6px;
+      background-color: #1a3d7a;
+      color: white;
+      font-size: 14px;
+      font-family: inherit;
+      box-sizing: border-box;
+    }
+
+    input[type="text"]:focus, textarea:focus {
+      outline: none;
+      border-color: #4CAF50;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    input::placeholder, textarea::placeholder {
+      color: #888;
+    }
+
+    .required {
+      color: #ff4757;
+    }
+
+    .submit-button {
+      width: 100%;
+      background: linear-gradient(135deg, #2d6cdf, #1e90ff);
+      color: white;
+      border: none;
+      padding: 16px;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      margin-top: 20px;
+    }
+
+    .submit-button:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .submit-button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .loading {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #ffffff;
+      border-radius: 50%;
+      border-top-color: transparent;
+      animation: spin 0.8s linear infinite;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .alert {
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 20px;
+      display: none;
+    }
+
+    .alert.show {
+      display: block;
+    }
+
+    .alert.success {
+      background-color: rgba(76, 175, 80, 0.2);
+      border: 1px solid #4CAF50;
+      color: #4CAF50;
+    }
+
+    .alert.error {
+      background-color: rgba(255, 71, 87, 0.2);
+      border: 1px solid #ff4757;
+      color: #ff4757;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 20px;
+      color: #00e6e6;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="index.html" class="back-link">← Back to AI Automation Hub</a>
+
+    <div class="header">
+      <h1>📄 Rewrite Your Resume</h1>
+      <p class="description">
+        Upload your resume, add desired keywords and instructions, and let AI optimize it for your target job.
+      </p>
+      <div class="session-info" id="sessionInfo"></div>
+    </div>
+
+    <form id="resumeForm">
+      <!-- Step 1: Upload Resume -->
+      <div class="form-card">
+        <h2>1. Upload Resume <span class="required">*</span></h2>
+        <p>Upload your resume file (PDF, DOC, or DOCX)</p>
+        <div class="file-upload-area" id="fileUploadArea">
+          <input type="file" id="resumeFile" class="file-input" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+          <div id="uploadPrompt">
+            <p style="margin: 0; font-size: 16px;">📎 Click to choose resume file</p>
+            <p style="margin: 8px 0 0 0; font-size: 12px; color: #888;">PDF, DOC, or DOCX format</p>
+          </div>
+          <div class="file-info" id="fileInfo">
+            <div class="file-name" id="fileName"></div>
+            <div class="file-size" id="fileSize"></div>
+            <button type="button" class="change-button" id="changeFileBtn">Change File</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2: Keywords -->
+      <div class="form-card">
+        <h2>2. Desired Keywords <span class="required">*</span></h2>
+        <p>Enter keywords you want to include in your resume (comma-separated)</p>
+        <input 
+          type="text" 
+          id="keywords" 
+          placeholder="e.g., React, JavaScript, Project Management, Machine Learning"
+          required
+        />
+      </div>
+
+      <!-- Step 3: Instructions -->
+      <div class="form-card">
+        <h2>3. Instructions</h2>
+        <p>Add any specific instructions or requirements (optional)</p>
+        <textarea 
+          id="instructions" 
+          placeholder="e.g., Keep it to one page, emphasize leadership experience, highlight technical skills..."
+          rows="5"
+        ></textarea>
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" class="submit-button" id="submitBtn">
+        Submit Resume
+      </button>
+
+      <!-- Alert Messages -->
+      <div class="alert" id="alert"></div>
+    </form>
+  </div>
+
+  <script>
+    // Generate UUID-like session ID
+    function generateSessionId() {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+        const r = Math.random() * 16 | 0;
+        const v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
+    }
+
+    // Load or create session ID
+    function loadOrCreateSessionId() {
+      let sessionId = localStorage.getItem('resumeSessionId');
+      if (!sessionId) {
+        sessionId = generateSessionId();
+        localStorage.setItem('resumeSessionId', sessionId);
+      }
+      document.getElementById('sessionInfo').textContent = `Session ID: ${sessionId}`;
+      return sessionId;
+    }
+
+    // Webhook URL (same as in React Native app)
+    const WEBHOOK_URL = 'https://primary-production-da3f.up.railway.app/webhook-test/7eab2e1f-99b9-42ee-ab90-480548527e58';
+
+    // Initialize
+    const sessionId = loadOrCreateSessionId();
+    let selectedFile = null;
+
+    // File upload handling
+    const fileInput = document.getElementById('resumeFile');
+    const fileUploadArea = document.getElementById('fileUploadArea');
+    const uploadPrompt = document.getElementById('uploadPrompt');
+    const fileInfo = document.getElementById('fileInfo');
+    const fileName = document.getElementById('fileName');
+    const fileSize = document.getElementById('fileSize');
+    const changeFileBtn = document.getElementById('changeFileBtn');
+
+    fileUploadArea.addEventListener('click', () => {
+      fileInput.click();
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        selectedFile = file;
+        fileName.textContent = `✓ ${file.name}`;
+        fileSize.textContent = `Size: ${(file.size / 1024).toFixed(2)} KB`;
+        fileInfo.classList.add('show');
+        uploadPrompt.style.display = 'none';
+        fileUploadArea.classList.add('has-file');
+      }
+    });
+
+    changeFileBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      fileInput.click();
+    });
+
+    // Convert file to base64
+    function fileToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const base64 = reader.result.split(',')[1]; // Remove data:type;base64, prefix
+          resolve(base64);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // Show alert
+    function showAlert(message, type = 'success') {
+      const alert = document.getElementById('alert');
+      alert.textContent = message;
+      alert.className = `alert ${type} show`;
+      setTimeout(() => {
+        alert.classList.remove('show');
+      }, 5000);
+    }
+
+    // Form submission
+    const form = document.getElementById('resumeForm');
+    const submitBtn = document.getElementById('submitBtn');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // Validation
+      if (!selectedFile) {
+        showAlert('Please upload your resume file.', 'error');
+        return;
+      }
+
+      const keywords = document.getElementById('keywords').value.trim();
+      if (!keywords) {
+        showAlert('Please add desired keywords.', 'error');
+        return;
+      }
+
+      // Disable submit button and show loading
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span class="loading"></span>Submitting...';
+
+      try {
+        // Convert file to base64
+        const base64Data = await fileToBase64(selectedFile);
+
+        // Prepare payload
+        const payload = {
+          sessionId: sessionId,
+          resume: {
+            name: selectedFile.name,
+            size: selectedFile.size,
+            mimeType: selectedFile.type,
+            data: base64Data
+          },
+          keywords: keywords,
+          instructions: document.getElementById('instructions').value.trim()
+        };
+
+        // Send to webhook
+        const response = await fetch(WEBHOOK_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (response.ok) {
+          showAlert('✅ Success! Your resume and information have been submitted successfully!', 'success');
+          // Optionally reset form
+          setTimeout(() => {
+            form.reset();
+            selectedFile = null;
+            fileInfo.classList.remove('show');
+            uploadPrompt.style.display = 'block';
+            fileUploadArea.classList.remove('has-file');
+            fileInput.value = '';
+          }, 2000);
+        } else {
+          const errorText = await response.text();
+          throw new Error(`Server error: ${response.status} - ${errorText}`);
+        }
+      } catch (error) {
+        console.error('Submission error:', error);
+        showAlert(`❌ Submission failed: ${error.message}. Please try again.`, 'error');
+      } finally {
+        // Re-enable submit button
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Submit Resume';
+      }
+    });
+  </script>
+</body>
+</html>
+

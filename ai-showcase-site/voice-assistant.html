@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Voice Assistant – AI Automation Hub</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .header { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .back-btn {
+      color: #64ffda; text-decoration: none; font-size: 16px;
+      display: inline-flex; align-items: center; gap: 8px; transition: color 0.3s;
+    }
+    .back-btn:hover { color: #fff; }
+    .container {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 40px 20px; text-align: center;
+      max-width: 800px; margin: auto;
+    }
+    .title {
+      font-size: 2.5rem; font-weight: 700; margin-bottom: 20px;
+      background: linear-gradient(135deg, #64ffda, #bb86fc);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .subtitle {
+      font-size: 1.2rem; color: #b0b0b0; margin-bottom: 60px; line-height: 1.6;
+    }
+    .voice-interface {
+      display: flex; flex-direction: column; align-items: center; gap: 30px;
+    }
+    .mic-button {
+      width: 120px; height: 120px; border-radius: 50%;
+      background: linear-gradient(135deg, #64ffda, #bb86fc);
+      border: none; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: all 0.3s; position: relative;
+      box-shadow: 0 10px 30px rgba(100,255,218,0.3);
+    }
+    .mic-button:hover {
+      transform: scale(1.05); box-shadow: 0 15px 40px rgba(100,255,218,0.4);
+    }
+    .mic-button:active { transform: scale(0.95); }
+    .mic-button.recording {
+      animation: pulse 1.5s infinite;
+      background: linear-gradient(135deg, #ff6b6b, #ffd93d);
+    }
+    @keyframes pulse {
+      0%   { box-shadow: 0 10px 30px rgba(255,107,107,0.3); }
+      50%  { box-shadow: 0 20px 50px rgba(255,107,107,0.6); }
+      100% { box-shadow: 0 10px 30px rgba(255,107,107,0.3); }
+    }
+    .mic-icon { font-size: 3rem; color: #0f0f23; font-weight: bold; }
+    .instruction {
+      font-size: 1.1rem; color: #e0e0e0; max-width: 500px; line-height: 1.6;
+    }
+    .status {
+      min-height: 60px; display: flex; align-items: center; justify-content: center;
+    }
+    .status-text {
+      font-size: 1rem; color: #64ffda; font-weight: 500;
+    }
+    .examples {
+      margin-top: 40px; padding: 30px;
+      background: rgba(255,255,255,0.05); border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .examples h3 {
+      color: #64ffda; margin-bottom: 20px; font-size: 1.3rem;
+    }
+    .example-list {
+      display: flex; flex-direction: column; gap: 12px; text-align: left;
+    }
+    .example-item {
+      color: #b0b0b0; font-style: italic; padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .example-item:last-child { border-bottom: none; }
+
+    @media (max-width: 768px) {
+      .title { font-size: 2rem; }
+      .mic-button { width: 100px; height: 100px; }
+      .mic-icon  { font-size: 2.5rem; }
+      .container { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <a href="index.html" class="back-btn">← Back to Home</a>
+  </div>
+  <div class="container">
+    <h1 class="title">🎤 Voice Assistant</h1>
+    <p class="subtitle">Your AI voice companion for SBI Card queries and general assistance</p>
+    <div class="voice-interface">
+      <button class="mic-button" id="micButton">
+        <span class="mic-icon">🎤</span>
+      </button>
+      <div class="instruction">
+        Press and hold the microphone and ask anything about SBI Card or questions like <strong>[translate:Aaj ka din kaisa hai?]</strong>
+      </div>
+      <div class="status" id="status">
+        <div class="status-text">Ready to listen...</div>
+      </div>
+    </div>
+    <div class="examples">
+      <h3>💡 Try asking:</h3>
+      <div class="example-list">
+        <div class="example-item">"Which SBI Card is best for me?"</div>
+        <div class="example-item">[translate:Aaj ka din kaisa hai?]</div>
+        <div class="example-item">"What are the benefits of SBI Card Prime?"</div>
+        <div class="example-item">"How do I apply for a credit card?"</div>
+        <div class="example-item">"Tell me about reward points"</div>
+        <div class="example-item">"What's the weather like today?"</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const micButton = document.getElementById('micButton');
+    const statusDiv = document.getElementById('status');
+    let isRecording = false;
+    let recognition;
+    const sessionId = 'session-' + Date.now();
+
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = true;
+      recognition.lang = 'en-IN';
+
+      recognition.onstart = () => {
+        isRecording = true;
+        micButton.classList.add('recording');
+        statusDiv.innerHTML = '<div class="status-text">🎧 Listening... Speak now!</div>';
+      };
+
+      recognition.onresult = event => {
+        let transcript = '';
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          transcript += event.results[i][0].transcript;
+        }
+        if (event.results[event.resultIndex].isFinal) {
+          statusDiv.innerHTML = `<div class="status-text">🤔 You said: "${transcript}"</div>`;
+          sendToWebhook(transcript);
+        } else {
+          statusDiv.innerHTML = `<div class="status-text">👂 Listening: "${transcript}"</div>`;
+        }
+      };
+
+      recognition.onerror = event => {
+        console.error('Speech recognition error:', event.error);
+        statusDiv.innerHTML = '<div class="status-text">❌ Error occurred. Please try again.</div>';
+        resetMicButton();
+      };
+
+      recognition.onend = () => {
+        resetMicButton();
+        setTimeout(() => {
+          statusDiv.innerHTML = '<div class="status-text">Ready to listen...</div>';
+        }, 3000);
+      };
+    } else {
+      statusDiv.innerHTML = '<div class="status-text">❌ Speech recognition not supported in this browser.</div>';
+    }
+
+    micButton.addEventListener('mousedown', e => { e.preventDefault(); if (recognition && !isRecording) recognition.start(); });
+    micButton.addEventListener('mouseup',   e => { e.preventDefault(); if (recognition && isRecording) recognition.stop(); });
+    micButton.addEventListener('mouseleave',e => { e.preventDefault(); if (recognition && isRecording) recognition.stop(); });
+    micButton.addEventListener('touchstart',e => { e.preventDefault(); if (recognition && !isRecording) recognition.start(); });
+    micButton.addEventListener('touchend',  e => { e.preventDefault(); if (recognition && isRecording) recognition.stop(); });
+
+    function resetMicButton() {
+      isRecording = false;
+      micButton.classList.remove('recording');
+    }
+
+    function sendToWebhook(transcript) {
+      statusDiv.innerHTML = '<div class="status-text">🚀 Sending to server...</div>';
+      const payload = JSON.stringify({ sessionId, transcript: transcript.trim() });
+      fetch('https://primary-production-da3f.up.railway.app/webhook/voice-assistant', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionId, transcript: transcript.trim() })
+      })
+
+        
+      .then(res => {
+        if (!res.ok) throw new Error('Network response was not ok');
+        return res.arrayBuffer();
+      })
+      .then(buffer => {
+        const blob = new Blob([buffer], { type: 'audio/mpeg' });
+        const url = URL.createObjectURL(blob);
+        const audio = new Audio(url);
+        audio.play();
+        audio.onplaying = () => {
+          statusDiv.innerHTML = '<div class="status-text">🔊 Speaking...</div>';
+        };
+
+        
+        statusDiv.innerHTML = '<div class="status-text">🔊 Playing response...</div>';
+        audio.onended = () => {
+          URL.revokeObjectURL(url);
+          statusDiv.innerHTML = '<div class="status-text">Ready to listen...</div>';
+        };
+      })
+      .catch(err => {
+        console.error('Webhook error:', err);
+        statusDiv.innerHTML = '<div class="status-text">❌ Failed to play audio. Try again.</div>';
+        setTimeout(() => {
+          statusDiv.innerHTML = '<div class="status-text">Ready to listen...</div>';
+        }, 3000);
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Email Agent – Kumar Gyanam</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #0b1f4d;
+      color: white;
+      padding: 40px 20px;
+      text-align: center;
+    }
+    h1 {
+      margin-bottom: 10px;
+    }
+    form {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 4px;
+      border: none;
+      font-size: 16px;
+    }
+    button {
+      padding: 12px 24px;
+      font-size: 16px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    #result {
+      margin-top: 20px;
+      background: #ffffff10;
+      padding: 15px;
+      border-radius: 8px;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <h1>📨 Email Agent</h1>
+  <p>This AI agent reads customer emails and generates professional replies using support policy.</p>
+
+  <form id="emailForm">
+    <input type="text" id="subject" placeholder="Email Subject" required />
+    <textarea id="body" placeholder="Paste email body here..." rows="6" required></textarea>
+    <input type="text" id="from" placeholder="Your Name (optional)" />
+    <button type="submit">Generate Response</button>
+  </form>
+
+  <div id="result"></div>
+
+  <script>
+    const form = document.getElementById('emailForm');
+    const resultBox = document.getElementById('result');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const subject = document.getElementById('subject').value;
+      const body = document.getElementById('body').value;
+      const from = document.getElementById('from').value;
+
+      resultBox.innerText = "⏳ Generating response...";
+
+      try {
+        const res = await fetch('https://YOUR_N8N_WEBHOOK_URL_HERE', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ subject, body, from })
+        });
+
+        const result = await res.json();
+        resultBox.innerHTML = `<strong>AI Response:</strong><br><br>${result.response}`;
+      } catch (err) {
+        resultBox.innerText = "❌ Something went wrong. Please try again.";
+      }
+    });
+  </script>
+</body>
+</html>

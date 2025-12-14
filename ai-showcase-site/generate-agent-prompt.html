@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Prompt Agent – Chat UI</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0b1f4d;
+      color: white;
+      height: 100%;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+    }
+
+    h1 {
+      text-align: center;
+      margin: 16px 12px 8px;
+      font-size: 1.2rem;
+    }
+
+    .chat-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      max-width: 700px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .chat-container {
+      flex: 1;
+      background-color: #132e65;
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      gap: 10px;
+      margin: 0 12px;
+    }
+
+    .message {
+      padding: 12px 16px;
+      border-radius: 10px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      max-width: 90%;
+      animation: fadeIn 0.3s ease-in;
+    }
+
+    .user {
+      background-color: #4CAF50;
+      align-self: flex-end;
+      color: #000;
+    }
+
+    .bot {
+      background-color: #ffffff20;
+      align-self: flex-start;
+    }
+
+    form {
+      display: flex;
+      padding: 10px;
+      margin: 0 12px 12px;
+      gap: 8px;
+    }
+
+    input {
+      flex: 1;
+      padding: 14px;
+      border-radius: 30px;
+      border: none;
+      font-size: 16px;
+      outline: none;
+    }
+
+    button {
+      background: linear-gradient(90deg, #00c9ff, #92fe9d);
+      border: none;
+      padding: 14px 20px;
+      font-size: 16px;
+      color: #000;
+      font-weight: bold;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <h1>🧠 Build Great Prompts for Your Agent</h1>
+
+  <div class="chat-wrapper">
+    <div class="chat-container" id="chatBox">
+      <div class="message bot">
+        Hello legend! 👋<br><br>
+        Let’s start with understanding the role of the agent.<br><br>
+        – What do you want this AI agent to act as?<br>
+        – What kind of requests or situations will this agent typically handle?
+      </div>
+    </div>
+
+    <form id="chatForm">
+      <input type="text" id="chatInput" placeholder="Type your reply here..." required />
+      <button type="submit">Send ➤</button>
+    </form>
+  </div>
+
+  <script>
+    const chatBox = document.getElementById('chatBox');
+    const form = document.getElementById('chatForm');
+    const input = document.getElementById('chatInput');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const userText = input.value.trim();
+      if (!userText) return;
+
+      appendMessage(userText, 'user');
+      input.value = '';
+
+      appendMessage('Thinking...', 'bot', true);
+      try {
+        const response = await fetch('https://primary-production-da3f.up.railway.app/webhook/30b0b7f8-d5df-459d-bcb7-a8fdd0594ce3', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ idea: userText })
+        });
+
+        const data = await response.json();
+        const raw = data.output || data.response || JSON.stringify(data);
+        const output = String(raw).replace(/\\n/g, '<br>');
+
+        removeTyping();
+        appendMessage(output, 'bot');
+      } catch (err) {
+        removeTyping();
+        appendMessage('⚠️ Something went wrong.', 'bot');
+        console.error(err);
+      }
+    });
+
+    function appendMessage(text, type, isTemporary = false) {
+      const msg = document.createElement('div');
+      msg.className = `message ${type}`;
+      msg.innerHTML = text;
+      if (isTemporary) msg.id = 'typing-indicator';
+      chatBox.appendChild(msg);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function removeTyping() {
+      const typingMsg = document.getElementById('typing-indicator');
+      if (typingMsg) typingMsg.remove();
+    }
+  </script>
+</body>
+</html>
